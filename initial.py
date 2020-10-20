@@ -16,4 +16,6 @@ volume = data['Volume']
 twen_d = data['20_day'] #20 day moving averages
 fif_d = data['50_day']    #50 day moving aberages
 
-print(opens)
+
+
+print("Starting Game")
