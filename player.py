@@ -17,7 +17,7 @@ class Player:
                                        # within out portfolio
 
         if name in self.portfolio:     #check if stock in portfolio 
-            if n_shares > self.portfolio:
+            if n_shares > self.portfolio[tick.ticker]:
                 print("Not enough shares")
             else:
                 self.cash += tick.price*n_shares
