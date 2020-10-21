@@ -8,7 +8,7 @@ class Player:
         if tick.price*shares>self.cash:
             print("Not enough cash")
         else:
-            self.portfolio[tick.ticker] = shares #Here i store the ticker 
+            self.portfolio[tick.ticker] = self.portfolio[tick.ticker]+shares #Here i store the ticker 
                                                 #name as the key
                                                 #and the number of 
                                                 #shares as the value
