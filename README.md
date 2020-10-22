@@ -12,12 +12,12 @@ The player wins by having a larger score/portfolio value than the opposing playe
 
 For each turn the player is given information on the current day's information of the stock AAPL.
 
-High - The highest price the stock traded for that day
-Low  - The lowest price the stock traded for that day
-Close - The final price of the stock that day
-Volume - The amount of trades everyone in the stockmarket mad
-20_day - The average price of the stock over the course of the last 20 days
-50_day - The average price of the stock over the course of the last 50 days
+*High - The highest price the stock traded for that day
+*Low  - The lowest price the stock traded for that day
+*Close - The final price of the stock that day
+*Volume - The amount of trades everyone in the stockmarket mad
+*20_day - The average price of the stock over the course of the last 20 days
+*50_day - The average price of the stock over the course of the last 50 days
 
 It will update the value of your portfolio accordingly at the start of each turn.
 
