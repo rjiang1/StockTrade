@@ -21,4 +21,4 @@ Volume - The amount of trades everyone in the stockmarket mad
 
 It will update the value of your portfolio accordingly at the start of each turn.
 
-**The**
+**The closing price of the previous day and the opening price of the current day will be different due to after hours trading and premarket trading.**
