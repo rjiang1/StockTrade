@@ -2,9 +2,9 @@
 Run the Player_Turns.ipynb file.
 
 For each turn you will be prompted for 3 actions
-Buy
-Sell
-Do Nothing/End Turn
+* Buy
+* Sell
+* Do Nothing/End Turn
 
 Once 30 days has passed the player will have their stocks liquidated (sold).
 Their final score is the value of their portfolio.
