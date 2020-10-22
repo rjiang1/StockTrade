@@ -21,4 +21,4 @@ Volume - The amount of trades everyone in the stockmarket mad
 
 It will update the value of your portfolio accordingly at the start of each turn.
 
-**The 
+**The**
