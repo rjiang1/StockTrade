@@ -5,7 +5,9 @@ class Player:
         self.equity_val = 0
     # the "tick" argument refers to an object of the "Stock" class
     def buy(self,tick,shares): #tick here refers to the ticker variable
-        if tick.price*shares>self.cash:
+        if shares <= 0:
+            print("Can't by 0 or less shares")
+        elif tick.price*shares>self.cash:
             print("Not enough cash")
         else:
             self.portfolio[tick.ticker] = self.portfolio[tick.ticker]+shares #Here i store the ticker 
