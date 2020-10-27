@@ -1,7 +1,7 @@
 ﻿# StockTrade
 Run the Player_Turns.ipynb file.
 
-For each turn you will be prompted for 3 actions
+For each turn the player will be prompted for 3 actions
 * Buy
 * Sell
 * Do Nothing/ Hold
