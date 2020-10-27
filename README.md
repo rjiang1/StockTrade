@@ -11,7 +11,7 @@ Apple stocks open, close, high, low and volume gets displayed on screen (1 day s
 
 For each turn the player will be prompted for 4 actions
 * Buy - Enter B/b to buy a stock and then you have to enter number of stocks you want to buy, one cannot buy stock worth more than your cash balance.
-* Sell - Enter S/s to sell a stock and then you have to enter number of stocks you want to sell, one cannot sell stocks whose count is more than actual count.
+* Sell - Enter S/s to sell a stock and then you have to enter number of stocks you want to sell, one cannot sell stocks whose count is more than what he/ she actually owns.
 * Do Nothing/ Hold - Enter H/h, you will be shown next day apple stock.
 * Exit - Enter E/e you will be exited out of prediction game and your portfolio, profit/ loss will be shown.
 
@@ -31,4 +31,5 @@ For each turn the player is given information on the current day's information o
 It will update the value of your portfolio accordingly at the start of each turn.
 
 After game ends it will again prompt you to enter Y/ N to play the game again. Enter Y/y to play game again or enter N/n to exit game.
+
 **The closing price of the previous day and the opening price of the current day will be different due to after hours trading and premarket trading.**
