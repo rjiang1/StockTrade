@@ -1,21 +1,21 @@
 ﻿# StockTrade
 Run the Player_Turns.ipynb/ Player_Turns.py file.
 
-Its a single player game.
+It's a single player stock price prediction game.
 
-First player will be prompted for number of days he/ she wanted to predit Apple company stocks.
+First player will be prompted for number of days he/ she wanted to predict Apple company stocks.
 
 After your portfolio will get Initialized to '0' Apple stocks and 10000 as your cash.
 
 Apple stocks open, close, high, low and volume gets displayed on screen (1 day stock details).
 
 For each turn the player will be prompted for 4 actions
-* Buy - Enter B/b to buy a stock and then you have to enter number of stocks you want to buy, one cannot buy stock worth more than your cash balance.
+* Buy - Enter B/b to buy a stock and then you have to enter number of stocks you want to buy, one cannot buy stocks worth more than his/ her cash balance.
 * Sell - Enter S/s to sell a stock and then you have to enter number of stocks you want to sell, one cannot sell stocks whose count is more than what he/ she actually owns.
 * Do Nothing/ Hold - Enter H/h, you will be shown next day apple stock.
-* Exit - Enter E/e you will be exited out of prediction game and your portfolio, profit/ loss will be shown.
+* Exit - Enter E/e you will be exited out of prediction game and then your portfolio, profit/ loss will be shown.
 
-Once his/ her prediction ends after n days (n is what you gave as input at first) we will be calculating totalCash as cash Balance + total shares cost that one holds according to n+1 day apple stock open price.
+Once his/ her prediction ends after n days (n is what you gave as input at first) we will be calculating totalCash as cash Balance + total shares cost that one holds according to n+1 day apple stocks open price.
 
 Next player portfolio, whether he/ she ended up in profit [win] i.e., totalCash > 10000 (starting balance) or loss i.e., totalCash < 10000 will be displayed.
 
