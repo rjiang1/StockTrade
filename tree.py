@@ -1,8 +1,13 @@
 import player as p
 
-class TreeNode:
-    def __init__(self):
-        # self.test = '[p['
+class Node:
+    def __init__(self, action, worth=0):
+        self.action = action
+        self.worth = worth
+        self.buy = Node()
+        self.hold = Node()
+        self.sell = Node()
+
 
 
 """
