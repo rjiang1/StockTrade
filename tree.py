@@ -1,12 +1,26 @@
 import player as p
+import numpy as np
+import pandas as pd
+
+data = pd.read_csv("AAPL.csv", usecols=[1,2,3,4,6,7,8])
 
 class Node:
-    def __init__(self, action, worth=0):
-        self.action = action
-        self.worth = worth
-        self.buy = Node()
-        self.hold = Node()
-        self.sell = Node()
+    def __init__(self, action = None, player = p.player()):
+        self.action = action #the action here means what action the parent took. The root will be hold by default
+        self.cash = player.cash   #the portfolio value to at that point in the node
+        self.children = [] #this is going to be filled with Node() objects
+
+
+def beam_search(root,k, game_length):
+    beam = k #our beam size
+    current_q = [beam]
+    next_q = []
+
+    for level in game_length:
+        while current_q:
+            node = current_q.pop()
+
+
 
 
 
