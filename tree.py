@@ -2,26 +2,47 @@ import player as p
 import numpy as np
 import pandas as pd
 
-data = pd.read_csv("AAPL.csv", usecols=[1,2,3,4,6,7,8])
+data = pd.read_csv("AAPL.csv", usecols=[1, 2, 3, 4, 6, 7, 8])
+
 
 class Node:
-    def __init__(self, action = None, player = p.player()):
-        self.action = action #the action here means what action the parent took. The root will be hold by default
-        self.cash = player.cash   #the portfolio value to at that point in the node
-        self.children = [] #this is going to be filled with Node() objects
+    def __init__(self, action=None, player=p.player()):
+        self.action = action  # the action here means what action the parent took. The root will be hold by default
+        self.cash = player.cash  # the portfolio value to at that point in the node
+        self.children = []  # this is going to be filled with Node() objects
 
 
-def beam_search(root,k, game_length):
-    beam = k #our beam size
-    current_q = [beam]
-    next_q = []
+def perform_action(action, player):
+    return Node()  # that has taken the action
 
-    for level in game_length:
+
+def take_beams(k, array):  # for each level in the array, this function takes the k best
+    # in this function we will also need to apply the heuristic to take the k best nodes
+    return []
+
+
+def doable():  # to check if an action is viable
+    return True
+
+
+def beam_search(root, k, game_length):  # k is the beam size
+    current_q = [root]  # we will iterate through this to create child
+    next_q = []  # we will que children nodes here
+
+    for level in range(game_length):
         while current_q:
             node = current_q.pop()
+            for act in ['b', 's', 'h']:  # buy sell hold
+                if doable:
+                    # child = perform_action(act,node.copy())
+                    child = Node(action=act, player=node.copy())  # will need to adjust player based on action to above
+                    node.children.append(child)
+                    next_q.append(child)
 
-
-
+        current_q = take_beams(k, next_q)
+        if level == game_length-1:
+            return take_beams(1, next_q)  # in the end of the game we will take the best node
+        next_q = []
 
 
 """
