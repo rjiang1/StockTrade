@@ -4,15 +4,33 @@ import pandas as pd
 
 data = pd.read_csv("AAPL.csv", usecols=[1, 2, 3, 4, 6, 7, 8])
 
+## Recent game_length days data
+##df = data.tail(game_length+1).copy()
+
+##stockObject = p.Stock('Apple',df.iloc[turns,0])
+
 
 class Node:
-    def __init__(self, action=None, player=p.player()):
+    def __init__(self, action=None, player=p.Player('Apple',10000,{'Apple':0})):
         self.action = action  # the action here means what action the parent took. The root will be hold by default
         self.cash = player.cash  # the portfolio value to at that point in the node
         self.children = []  # this is going to be filled with Node() objects
 
 
-def perform_action(action, player):
+def perform_action(choice, playerObj, stockObject, shares):
+    if choice == 'S' or choice == 's':
+        #n_shares_sold = 500/float(df.iloc[turn][0])
+        n_shares_sold = shares
+        playerObj.sell(stockObject,int(n_shares_sold),'Apple')
+
+    elif choice == 'B' or choice == 'b':
+        #n_shares_sold = 500/float(df.iloc[turn][0])
+        n_shares_bought = shares
+        playerObj.buy(stockObject,int(n_shares_bought))
+
+    elif choice == 'H' or choice == 'h':
+            continue
+  
     return Node()  # that has taken the action
 
 
@@ -28,16 +46,16 @@ def random_take_beam(k,array):  # for each level in the array, this function tak
     nodes_random = array[label_list_random,:] # array([node[label_random_1], node[label_random_2],...,node[label_random_k]])
     return nodes_random
 
-def doable(act, tick, player, shares):  # to check if an action is viable
+def doable(act,stockObj, player, shares):  # to check if an action is viable
     if act == 'b':
         if shares <= 0:
             print("Can't by 0 or less shares")
             return False
-        elif tick.price * shares > player.cash:
+        elif stokObj.price * shares > player.cash:
             print("Not enough cash")
             return False
     if act == 's':
-        if shares > player.portfolio[tick.ticker]:
+        if shares > player.portfolio['Apple']:
             print("Not enough shares")
             return False
     return True
@@ -46,13 +64,15 @@ def doable(act, tick, player, shares):  # to check if an action is viable
 def beam_search(root, k, game_length):  # k is the beam size
     current_q = [root]  # we will iterate through this to create child
     next_q = []  # we will que children nodes here
-
+    df = data.tail(game_length+1).copy()
     for level in range(game_length):
+        stockObject = p.Stock('Apple',df.iloc[game_length,0])
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
-                if doable:
-                    # child = perform_action(act,node.copy())
+                shares = 500/float(df.iloc[level][0])
+                if doable(act, stockObject, player, shares):
+                    child = perform_action(act,node.copy(), stockObject, shares)
                     child = Node(action=act, player=node.copy())  # will need to adjust player based on action to above
                     node.children.append(child)
                     next_q.append(child)
@@ -65,14 +85,16 @@ def beam_search(root, k, game_length):  # k is the beam size
 def basic_AI(root, k, game_length):  # k is the beam size
     current_q = [root]  # we will iterate through this to create child
     next_q = []  # we will que children nodes here
-
+    df = data.tail(game_length+1).copy()
     for level in range(game_length):
+        stockObject = p.Stock('Apple',df.iloc[game_length,0])
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
-                if doable:
-
-                    child = Node(action=act, player=node.copy())  # will need to adjust player based on action to above
+                shares = 500/float(df.iloc[level][0])
+                if doable(act,stockObject, player, shares):
+                    child = perform_action(act,node.copy(), stockObject, shares)
+                    child = Node(action=act, player=node.copy())
                     node.children.append(child)
                     next_q.append(child)
 
