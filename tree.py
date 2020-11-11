@@ -28,7 +28,18 @@ def random_take_beam(k,array):  # for each level in the array, this function tak
     nodes_random = array[label_list_random,:] # array([node[label_random_1], node[label_random_2],...,node[label_random_k]])
     return nodes_random
 
-def doable():  # to check if an action is viable
+def doable(act, tick, player, shares):  # to check if an action is viable
+    if act == 'b':
+        if shares <= 0:
+            print("Can't by 0 or less shares")
+            return False
+        elif tick.price * shares > player.cash:
+            print("Not enough cash")
+            return False
+    if act == 's':
+        if shares > player.portfolio[tick.ticker]:
+            print("Not enough shares")
+            return False
     return True
 
 
