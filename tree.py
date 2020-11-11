@@ -4,6 +4,9 @@ import pandas as pd
 import random
 
 data = pd.read_csv("AAPL.csv", usecols=[1, 2, 3, 4, 6, 7, 8])
+twentyMA = data['20_day']
+closing_prices = data['Close']
+
 
 # Recent game_length days data
 # df = data.tail(game_length+1).copy()
@@ -36,12 +39,26 @@ def perform_action(choice, playerObj, stockObject, shares):
     return Node(action=choice, player=playerObj.copy())  # that has taken the action
 
 
-def take_beams(k, array):  # for each level in the array, this function takes the k best
+def take_beams(k, array, level):  # for each level in the array, this function takes the k best
     # in this function we will also need to apply the heuristic to take the k best nodes
+    moving_average = twentyMA.iloc[-level-1]
+    price_difference = closing_prices.iloc[-level-1] - moving_average
+    # we will take the difference of the stock prices
+    # we then take the number of shares the player has
+    # multiply the difference with the shares to find
+    # the idea is that prices will move towards averages
+    # therefore a negative price difference means the price is undervalued
+    # the opposite for positive
+    # return the k most negative differences by multiplying the number of shares owned
+    # with the difference
+    for node in array:
+        player = node.player
+
+
     return []
 
 
-def random_take_beam(k,array):  # for each level in the array, this function takes k nodes randomly
+def random_take_beam(k, array):  # for each level in the array, this function takes k nodes randomly
     num_node = k 
     label_list = [i for i in range(len(array))]  # [0, 1, 2, 3, 4,...,len(array)]
     label_list_random = random.sample(label_list, num_node)  # choose k labels randomly from the label list
@@ -50,7 +67,8 @@ def random_take_beam(k,array):  # for each level in the array, this function tak
     return nodes_random
 
 
-def doable(act,stockObj, player, shares):  # to check if an action is viable
+def doable(act,stockObj, node, shares):  # to check if an action is viable
+    player = node.player
     if act == 'b':
         if shares <= 0:
             print("Can't by 0 or less shares")
@@ -70,18 +88,17 @@ def beam_search(root, k, game_length):  # k is the beam size
     next_q = []  # we will que children nodes here
     df = data.tail(game_length+1).copy()
     for level in range(game_length):
-        stockObject = p.Stock('Apple',df.iloc[game_length,0])
+        stockObject = p.Stock('Apple', df.iloc[game_length,0])
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
                 shares = 500/float(df.iloc[level][0])
-                if doable(act, stockObject, player, shares):
-
-                    child = perform_action(act, node, stockObject, shares)
+                if doable(act, stockObject, node, shares):
+                    child = perform_action(act, node.player, stockObject, shares)
                     node.children.append(child)
                     next_q.append(child)
 
-        current_q = take_beams(k, next_q)
+        current_q = take_beams(k, next_q, level)
         if level == game_length-1:
             return take_beams(1, next_q)  # in the end of the game we will take the best node
         next_q = []
@@ -92,14 +109,13 @@ def basic_AI(root, k, game_length):  # k is the beam size
     next_q = []  # we will que children nodes here
     df = data.tail(game_length+1).copy()
     for level in range(game_length):
-        stockObject = p.Stock('Apple',df.iloc[game_length,0])
+        stockObject = p.Stock('Apple', df.iloc[game_length, 0])
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
                 shares = 500/float(df.iloc[level][0])
-                if doable(act,stockObject, player, shares):
-                    child = perform_action(act,node.copy(), stockObject, shares)
-                    child = Node(action=act, player=node.copy())
+                if doable(act, stockObject, player, shares):
+                    child = perform_action(act, node.copy(), stockObject, shares)
                     node.children.append(child)
                     next_q.append(child)
 
