@@ -6,7 +6,7 @@ import player as p
 if __name__ == "__main__":
 
     node = t.Node()
-    # t.beam_search(node, 4, 15)
+    t.beam_search(node, 4, 30)
     # Find out why beam search always produces the same profit
-    t.basic_AI(node, 4, 9)
+    # t.basic_AI(node, 4, 20)
 
