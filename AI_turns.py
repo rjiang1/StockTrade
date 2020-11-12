@@ -8,7 +8,8 @@ if __name__ == "__main__":
     result_list = []
     for k in range(10):
         node = t.Node()
-        final_result = t.beam_search(node, 4, 10)
+        # final_result = t.beam_search(node, 4, 10)
+        final_result = t.basic_AI(node, 4, 10)
         result_list.append(final_result)
     print(result_list)   
     # Find out why beam search always produces the same profit

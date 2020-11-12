@@ -16,6 +16,8 @@ opening_prices = data['Open']
 
 # stockObject = p.Stock('AAPL',df.iloc[turns,0])
 
+# starting_cash = 0
+# five_percent = 0
 
 class Node:
     def __init__(self, action=None, player=p.Player('AAPL',10000,{'AAPL':0})):
@@ -23,6 +25,8 @@ class Node:
         self.cash = player.cash  # the portfolio value to at that point in the node
         self.children = []  # this is going to be filled with Node() objects
         self.player = player
+        self.starting_cash = player.cash
+        self.five_percent = math.floor(self.starting_cash * 0.05)
 
 
 def perform_action(choice, playerObj, stockObject, shares):
@@ -114,13 +118,13 @@ def random_take_beam(k, array,level):  # for each level in the array, this funct
     # nodes_random = array[label_list_random, :]  # array([node[label_random_1], node[label_random_2],...,node[label_random_k]])
     nodes_random = [array[i] for i in label_list_random]
     actions_random = [node.action for node in nodes_random]
-    print("level:",level)
+    print("level:", level)
     print(actions_random)
     #input("Press Enter to Continue")
     return nodes_random
 
 
-def doable(act,stockObj, node, shares):  # to check if an action is viable
+def doable(act, stockObj, node, shares):  # to check if an action is viable
     player = node.player
     if act == 'b':
         if shares <= 0:
@@ -142,14 +146,18 @@ def beam_search(root, k, game_length):  # k is the beam size
     df = data.tail(game_length+1).copy()
     for level in range(game_length):
         stockObject = p.Stock('AAPL', df.iloc[level,0])
-        ##stockObject = p.Stock('AAPL', df.iloc[game_length,0]) --> this is funny bug
-        #print("level:",game_length)
-        #print("open price on given day:",df.iloc[level,0])
+
+        #  stockObject = p.Stock('AAPL', df.iloc[game_length,0]) --> this is funny bug
+
+        # print("level:",game_length)
+
+        # print("open price on given day:",df.iloc[level,0])
+
         while current_q:
             node = current_q.pop()
             
             for act in ['b', 's', 'h']:  # buy sell hold
-                shares = int(500/float(df.iloc[level][0]))
+                shares = int(root.five_percent/float(df.iloc[level][0]))
                 if doable(act, stockObject, node, shares):
                     
                     #print("action and shares",act,shares)
@@ -171,15 +179,15 @@ def beam_search(root, k, game_length):  # k is the beam size
             print("Last day Open Price", df.iloc[game_length, 0])
             print("Total Cash Value", TotalCash)
 
-            if TotalCash > 10000:
-                print(f"Congrats! you made profit of:{TotalCash - 10000}\n")
-            elif TotalCash < 10000:
-                print(f"Oh No! you lost :{10000 - TotalCash}\n")
+            if TotalCash > root.starting_cash:
+                print(f"Congrats! you made profit of:{TotalCash - root.starting_cash}\n")
+            elif TotalCash < root.starting_cash:
+                print(f"Oh No! you lost :{root.starting_cash - TotalCash}\n")
             else:
                 print(f"No profit/  loss\n")
 
             #return take_beams(1, next_q, level)  # in the end of the game we will take the best node
-            return (TotalCash - 10000)
+            return (TotalCash - root.starting_cash)
         next_q = []
     
 
@@ -193,7 +201,7 @@ def basic_AI(root, k, game_length):  # k is the beam size
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
-                shares = int(500/float(df.iloc[level][0]))
+                shares = int(root.five_percent/float(df.iloc[level][0]))
                 if doable(act, stockObject, node, shares):
                     child = perform_action(act, node.player, stockObject, shares)
                     node.children.append(child)
@@ -212,14 +220,14 @@ def basic_AI(root, k, game_length):  # k is the beam size
             print("Portfolio", final_result[0].player.portfolio)
             print("Last day Open Price", df.iloc[game_length, 0])
             print("Total Cash Value", TotalCash)
-            if TotalCash > 10000:
-                print(f"Congrats! you made profit of:{TotalCash - 10000}\n")
-            elif TotalCash < 10000:
-                print(f"Oh No! you lost :{10000 - TotalCash}\n")
+            if TotalCash > root.starting_cash:
+                print(f"Congrats! you made profit of:{TotalCash - root.starting_cash}\n")
+            elif TotalCash < root.starting_cash:
+                print(f"Oh No! you lost :{root.starting_cash - TotalCash}\n")
             else:
                 print(f"No profit/  loss\n")
 
-            return final_result  # in the end of the game we will take one node randomly
+            return (TotalCash - root.starting_cash)  # in the end of the game we will take one node randomly
         next_q = []
 
 """
