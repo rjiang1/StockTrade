@@ -34,7 +34,7 @@ After game ends it will again prompt you to enter Y/ N to play the game again. E
 
 **The closing price of the previous day and the opening price of the current day will be different due to after hours trading and premarket trading.**
 
-﻿### Beam Search
+﻿#BeamSearch
  
  BeamSearch_Tree_AI:
  
