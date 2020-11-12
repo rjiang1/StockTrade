@@ -105,9 +105,13 @@ def take_beams(k, array, level):  # for each level in the array, this function t
 def random_take_beam(k, array):  # for each level in the array, this function takes k nodes randomly
     num_node = k 
     label_list = [i for i in range(len(array))]  # [0, 1, 2, 3, 4,...,len(array)]
-    label_list_random = random.sample(label_list, num_node)  # choose k labels randomly from the label list
+    label_list_random = random.sample(label_list, min(num_node,len(array)))  # choose k labels randomly from the label list
 
-    nodes_random = array[label_list_random, :]  # array([node[label_random_1], node[label_random_2],...,node[label_random_k]])
+    # nodes_random = array[label_list_random, :]  # array([node[label_random_1], node[label_random_2],...,node[label_random_k]])
+    nodes_random = [array[i] for i in label_list_random]
+    actions_random = [node.action for node in nodes_random]
+    print(actions_random)
+    input("Press Enter to Continue")
     return nodes_random
 
 
@@ -143,6 +147,7 @@ def beam_search(root, k, game_length):  # k is the beam size
                     next_q.append(child)
 
         current_q = take_beams(k, next_q, level)
+
         if level == game_length-1:
             final_result = take_beams(1, next_q, level)
 
@@ -152,6 +157,8 @@ def beam_search(root, k, game_length):  # k is the beam size
 
             print("Cash:", final_result[0].player.cash)
             print("Portfolio", final_result[0].player.portfolio)
+            print("Last Prices", df.iloc[game_length, 0])
+            print("Total Cash Value", TotalCash)
 
             if TotalCash > 10000:
                 print(f"Congrats! you made profit of:{TotalCash - 10000}\n")
@@ -159,7 +166,6 @@ def beam_search(root, k, game_length):  # k is the beam size
                 print(f"Oh No! you lost :{10000 - TotalCash}\n")
             else:
                 print(f"No profit/  loss\n")
-
 
             return take_beams(1, next_q, level)  # in the end of the game we will take the best node
         next_q = []
@@ -170,19 +176,37 @@ def basic_AI(root, k, game_length):  # k is the beam size
     next_q = []  # we will que children nodes here
     df = data.tail(game_length+1).copy()
     for level in range(game_length):
-        stockObject = p.Stock('AAPL', df.iloc[game_length, 0])
+        stockObject = p.Stock('AAPL', df.iloc[game_length,0])
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
                 shares = int(500/float(df.iloc[level][0]))
-                if doable(act, stockObject, player, shares):
-                    child = perform_action(act, node, stockObject, shares)
+                if doable(act, stockObject, node, shares):
+                    child = perform_action(act, node.player, stockObject, shares)
                     node.children.append(child)
                     next_q.append(child)
 
         current_q = random_take_beam(k, next_q)
         if level == game_length-1:
-            return random_take_beam(1, next_q)  # in the end of the game we will take one node randomly
+
+            final_result = random_take_beam(1, next_q)
+
+            # TotalShares = sum(playerObj.portfolio.values())
+            TotalCash = final_result[0].player.cash + \
+                        (final_result[0].player.portfolio['AAPL'] * df.iloc[game_length, 0])
+
+            print("Cash:", final_result[0].player.cash)
+            print("Portfolio", final_result[0].player.portfolio)
+            print("Last Prices", df.iloc[game_length, 0])
+            print("Total Cash Value", TotalCash)
+            if TotalCash > 10000:
+                print(f"Congrats! you made profit of:{TotalCash - 10000}\n")
+            elif TotalCash < 10000:
+                print(f"Oh No! you lost :{10000 - TotalCash}\n")
+            else:
+                print(f"No profit/  loss\n")
+
+            return final_result  # in the end of the game we will take one node randomly
         next_q = []
 
 """
