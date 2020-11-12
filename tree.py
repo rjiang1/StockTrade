@@ -152,13 +152,13 @@ def beam_search(root, k, game_length):  # k is the beam size
 
             print("Cash:", final_result[0].player.cash)
             print("Portfolio", final_result[0].player.portfolio)
-            
+
             if TotalCash > 10000:
                 print(f"Congrats! you made profit of:{TotalCash - 10000}\n")
             elif TotalCash < 10000:
                 print(f"Oh No! you lost :{10000 - TotalCash}\n")
             else:
-                print(f"No profit/ loss\n")
+                print(f"No profit/  loss\n")
 
 
             return take_beams(1, next_q, level)  # in the end of the game we will take the best node
