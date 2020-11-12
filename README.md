@@ -33,3 +33,6 @@ It will update the value of your portfolio accordingly at the start of each turn
 After game ends it will again prompt you to enter Y/ N to play the game again. Enter Y/y to play game again or enter N/n to exit game.
 
 **The closing price of the previous day and the opening price of the current day will be different due to after hours trading and premarket trading.**
+
+﻿# Beam Search
+
