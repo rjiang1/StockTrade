@@ -2,20 +2,21 @@ import player as p
 import numpy as np
 import pandas as pd
 import random
+import math
 
 data = pd.read_csv("AAPL.csv", usecols=[1, 2, 3, 4, 6, 7, 8])
 twentyMA = data['20_day']
-closing_prices = data['Close']
+opening_prices = data['Open']
 
 
 # Recent game_length days data
 # df = data.tail(game_length+1).copy()
 
-# stockObject = p.Stock('Apple',df.iloc[turns,0])
+# stockObject = p.Stock('AAPL',df.iloc[turns,0])
 
 
 class Node:
-    def __init__(self, action=None, player=p.Player('Apple',10000,{'Apple':0})):
+    def __init__(self, action=None, player=p.Player('AAPL',10000,{'AAPL':0})):
         self.action = action  # the action here means what action the parent took. The root will be hold by default
         self.cash = player.cash  # the portfolio value to at that point in the node
         self.children = []  # this is going to be filled with Node() objects
@@ -26,7 +27,7 @@ def perform_action(choice, playerObj, stockObject, shares):
     if choice == 'S' or choice == 's':
 
         n_shares_sold = shares
-        playerObj.sell(stockObject, int(n_shares_sold), 'Apple')
+        playerObj.sell(stockObject, int(n_shares_sold), 'AAPL')
 
     elif choice == 'B' or choice == 'b':
 
@@ -42,7 +43,7 @@ def perform_action(choice, playerObj, stockObject, shares):
 def take_beams(k, array, level):  # for each level in the array, this function takes the k best
     # in this function we will also need to apply the heuristic to take the k best nodes
     moving_average = twentyMA.iloc[-level-1]
-    price_difference = closing_prices.iloc[-level-1] - moving_average
+    price_difference = opening_prices.iloc[-level-1] - moving_average
     # we will take the difference of the stock prices
     # we then take the number of shares the player has
     # multiply the difference with the shares to find
@@ -51,11 +52,52 @@ def take_beams(k, array, level):  # for each level in the array, this function t
     # the opposite for positive
     # return the k most negative differences by multiplying the number of shares owned
     # with the difference
+
+    # another approach is to measure stock values + cash as a heuristic -- Pavan
+
+    buys = []
+    sells = []
+    holds = []
     for node in array:
         player = node.player
+        action = node.action
+        if action == 'b':
+            buys.append(player)
+        elif action == 's':
+            sells.append(player)
+        else:
+            holds.append(player)
 
+    def best(player_object):
+        return player_object.cash + (player_object.portfolio['AAPL'] * opening_prices.iloc[-level-1])
 
-    return []
+    buys.sort(reverse=True, key=best)
+    sells.sort(reverse=True, key=best)
+    holds.sort(reverse=True, key=best)
+
+    def take(x, bucket):
+        if len(bucket) < x:
+            return bucket
+        else:
+            return bucket[0:x]
+
+    k_vals = []
+
+    if price_difference < 0:
+        k_vals.append(take(math.ceil(k/2)), buys)
+        k_vals.append(take(math.floor(k/2), holds))
+    else:
+        k_vals.append(take(math.ceil(k/2)), sells)
+        k_vals.append(take(math.floor(k/2), holds))
+
+    k_actions = []
+    for ka in k_vals:
+        k_actions.append(ka.action)
+
+    print(k_actions)
+    input("Press Enter to Continue")
+
+    return k_vals
 
 
 def random_take_beam(k, array):  # for each level in the array, this function takes k nodes randomly
@@ -77,7 +119,7 @@ def doable(act,stockObj, node, shares):  # to check if an action is viable
             print("Not enough cash")
             return False
     if act == 's':
-        if shares > player.portfolio['Apple']:
+        if shares > player.portfolio['AAPL']:
             print("Not enough shares")
             return False
     return True
@@ -88,13 +130,13 @@ def beam_search(root, k, game_length):  # k is the beam size
     next_q = []  # we will que children nodes here
     df = data.tail(game_length+1).copy()
     for level in range(game_length):
-        stockObject = p.Stock('Apple', df.iloc[game_length,0])
+        stockObject = p.Stock('AAPL', df.iloc[game_length,0])
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
-                shares = 500/float(df.iloc[level][0])
+                shares = int(500/float(df.iloc[level][0]))
                 if doable(act, stockObject, node, shares):
-                    child = perform_action(act, node.player, stockObject, shares)
+                    child = perform_action(act, node, stockObject, shares)
                     node.children.append(child)
                     next_q.append(child)
 
@@ -109,13 +151,13 @@ def basic_AI(root, k, game_length):  # k is the beam size
     next_q = []  # we will que children nodes here
     df = data.tail(game_length+1).copy()
     for level in range(game_length):
-        stockObject = p.Stock('Apple', df.iloc[game_length, 0])
+        stockObject = p.Stock('AAPL', df.iloc[game_length, 0])
         while current_q:
             node = current_q.pop()
             for act in ['b', 's', 'h']:  # buy sell hold
-                shares = 500/float(df.iloc[level][0])
+                shares = int(500/float(df.iloc[level][0]))
                 if doable(act, stockObject, player, shares):
-                    child = perform_action(act, node.copy(), stockObject, shares)
+                    child = perform_action(act, node, stockObject, shares)
                     node.children.append(child)
                     next_q.append(child)
 
