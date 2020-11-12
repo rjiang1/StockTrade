@@ -4,9 +4,15 @@ import pandas as pd
 import player as p
 
 if __name__ == "__main__":
-
-    node = t.Node()
-    t.beam_search(node, 4, 30)
+    #for i in [30,60,90,120]:
+    result_list = []
+    for k in range(10):
+        node = t.Node()
+        final_result = t.beam_search(node, 4, 10)
+        result_list.append(final_result)
+    print(result_list)   
     # Find out why beam search always produces the same profit
-    # t.basic_AI(node, 4, 20)
+    #node = t.Node()
+    #t.beam_search(node, 4, 120)
+    #t.basic_AI(node, 4, 30)
 
