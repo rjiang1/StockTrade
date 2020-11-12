@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import random
 import math
+import copy
+
 
 data = pd.read_csv("AAPL.csv", usecols=[1, 2, 3, 4, 6, 7, 8])
 twentyMA = data['20_day']
@@ -37,7 +39,7 @@ def perform_action(choice, playerObj, stockObject, shares):
     elif choice == 'H' or choice == 'h':
         pass
   
-    return Node(action=choice, player=playerObj.copy())  # that has taken the action
+    return Node(action=choice, player=copy.deepcopy(playerObj))  # that has taken the action
 
 
 def take_beams(k, array, level):  # for each level in the array, this function takes the k best
@@ -62,14 +64,14 @@ def take_beams(k, array, level):  # for each level in the array, this function t
         player = node.player
         action = node.action
         if action == 'b':
-            buys.append(player)
+            buys.append(node)
         elif action == 's':
-            sells.append(player)
+            sells.append(node)
         else:
-            holds.append(player)
+            holds.append(node)
 
-    def best(player_object):
-        return player_object.cash + (player_object.portfolio['AAPL'] * opening_prices.iloc[-level-1])
+    def best(node_object):
+        return node_object.player.cash + (node_object.player.portfolio['AAPL'] * opening_prices.iloc[-level-1])
 
     buys.sort(reverse=True, key=best)
     sells.sort(reverse=True, key=best)
@@ -84,11 +86,11 @@ def take_beams(k, array, level):  # for each level in the array, this function t
     k_vals = []
 
     if price_difference < 0:
-        k_vals.append(take(math.ceil(k/2)), buys)
-        k_vals.append(take(math.floor(k/2), holds))
+        k_vals.extend(take(math.ceil(k/2), buys))
+        k_vals.extend(take(math.floor(k/2), holds))
     else:
-        k_vals.append(take(math.ceil(k/2)), sells)
-        k_vals.append(take(math.floor(k/2), holds))
+        k_vals.extend(take(math.ceil(k/2), sells))
+        k_vals.extend(take(math.floor(k/2), holds))
 
     k_actions = []
     for ka in k_vals:
@@ -136,13 +138,30 @@ def beam_search(root, k, game_length):  # k is the beam size
             for act in ['b', 's', 'h']:  # buy sell hold
                 shares = int(500/float(df.iloc[level][0]))
                 if doable(act, stockObject, node, shares):
-                    child = perform_action(act, node, stockObject, shares)
+                    child = perform_action(act, node.player, stockObject, shares)
                     node.children.append(child)
                     next_q.append(child)
 
         current_q = take_beams(k, next_q, level)
         if level == game_length-1:
-            return take_beams(1, next_q)  # in the end of the game we will take the best node
+            final_result = take_beams(1, next_q, level)
+
+            # TotalShares = sum(playerObj.portfolio.values())
+            TotalCash = final_result[0].player.cash + \
+                        (final_result[0].player.portfolio['AAPL'] * df.iloc[game_length, 0])
+
+            print("Cash:", final_result[0].player.cash)
+            print("Portfolio", final_result[0].player.portfolio)
+            
+            if TotalCash > 10000:
+                print(f"Congrats! you made profit of:{TotalCash - 10000}\n")
+            elif TotalCash < 10000:
+                print(f"Oh No! you lost :{10000 - TotalCash}\n")
+            else:
+                print(f"No profit/ loss\n")
+
+
+            return take_beams(1, next_q, level)  # in the end of the game we will take the best node
         next_q = []
 
 
