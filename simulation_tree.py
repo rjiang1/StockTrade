@@ -182,11 +182,11 @@ def beam_search(root, k, game_length):  # k is the beam size
             print("Total Cash Value", TotalCash)
             print("Total Nodes Processed", nodes_processed)
             if TotalCash > root.starting_cash:
-                print(f"Congrats! you made profit of:{TotalCash - root.starting_cash}\n")
+                print(f"Wow! our AI made profit of:{TotalCash - root.starting_cash}\n")
             elif TotalCash < root.starting_cash:
-                print(f"Oh No! you lost :{root.starting_cash - TotalCash}\n")
+                print(f"Oh No! our AI lost :{root.starting_cash - TotalCash}\n")
             else:
-                print(f"No profit/  loss\n")
+                print(f"No profit/ loss\n")
 
             # return take_beams(1, next_q, level)  # in the end of the game we will take the best node
             result.append((TotalCash - root.starting_cash))
