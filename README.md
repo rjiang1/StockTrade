@@ -36,7 +36,7 @@ After game ends it will again prompt you to enter Y/ N to play the game again. E
 
 # BeamSearch
  
- BeamSearch_Tree_AI ans Base line AI:
+ BeamSearch_Tree_AI and Base line AI:
  
  Run the AI_turns.py file. 
  
