@@ -101,6 +101,7 @@ def take_beams(k, array, level):  # for each level in the array, this function t
         k_actions.append(ka.action)
 
     print("level:",level)
+    print("No of nodes Processed: ",len(k_actions))
     print(k_actions)
     # for ka in k_vals:
     #    print("portfolio:",ka.player.portfolio)
@@ -119,6 +120,7 @@ def random_take_beam(k, array,level):  # for each level in the array, this funct
     nodes_random = [array[i] for i in label_list_random]
     actions_random = [node.action for node in nodes_random]
     print("level:", level)
+    print("No of nodes Processed: ",len(actions_random))
     print(actions_random)
     input("Press Enter to Continue")
     return nodes_random
