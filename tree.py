@@ -222,9 +222,9 @@ def basic_AI(root, k, game_length):  # k is the beam size
             print("Last day Open Price", df.iloc[game_length, 0])
             print("Total Cash Value", TotalCash)
             if TotalCash > root.starting_cash:
-                print(f"Congrats! you made profit of:{TotalCash - root.starting_cash}\n")
+                print(f"Wow! baseline AI made profit of:{TotalCash - root.starting_cash}\n")
             elif TotalCash < root.starting_cash:
-                print(f"Oh No! you lost :{root.starting_cash - TotalCash}\n")
+                print(f"Oh No! baseline AI lost :{root.starting_cash - TotalCash}\n")
             else:
                 print(f"No profit/  loss\n")
 
