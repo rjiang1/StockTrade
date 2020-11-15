@@ -170,6 +170,7 @@ def beam_search(root, k, game_length):  # k is the beam size
         nodes_processed += actions_len
 
         if level == game_length - 1:
+            level+=1
             final_result, actions_len = take_beams(1, next_q, level)
             nodes_processed += actions_len
             # TotalShares = sum(playerObj.portfolio.values())
@@ -215,7 +216,7 @@ def basic_AI(root, k, game_length):  # k is the beam size
         current_q, actions_len = random_take_beam(k, next_q, level)
         nodes_processed += actions_len
         if level == game_length - 1:
-
+            level+=1
             final_result, actions_len = random_take_beam(1, next_q, level)
             nodes_processed += actions_len
             # TotalShares = sum(playerObj.portfolio.values())
