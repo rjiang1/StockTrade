@@ -10,6 +10,8 @@ twentyMA = data['20_day']
 opening_prices = data['Open']
 data.dropna()
 
+data_nn = pd.read_csv("train2.csv")
+
 
 class Node:
     def __init__(self, action=None, player=p.Player('AAPL', 10000, {'AAPL': 0})):
@@ -43,6 +45,17 @@ def take_beams(k, array, level):  # for each level in the array, this function t
     # in this function we will also need to apply the heuristic to take the k best nodes
     moving_average = twentyMA.iloc[-level - 1]
     price_difference = opening_prices.iloc[-level - 1] - moving_average
+    b, h, s = data_nn['b'], data_nn['h'], data_nn['s']
+    hot = np.column_stack((b, h, s))
+    row_nn = hot[-level-1]
+    nn_action = ''
+    if row_nn[0] == 1:
+        nn_action = 'b'
+    elif row_nn[1] == 1:
+        nn_action = 's'
+    else:
+        nn_action = 'h'
+
     # we will take the difference of the stock prices
     # we then take the number of shares the player has
     # multiply the difference with the shares to find
@@ -58,7 +71,7 @@ def take_beams(k, array, level):  # for each level in the array, this function t
     sells = []
     holds = []
     for node in array:
-        player = node.player
+        # player = node.player
         action = node.action
         if action == 'b':
             buys.append(node)
@@ -89,7 +102,11 @@ def take_beams(k, array, level):  # for each level in the array, this function t
         k_vals.extend(take(math.ceil(k / 2), sells))
         k_vals.extend(take(math.floor(k / 2), holds))
     k_vals.sort(reverse=True, key=best)
+    k_vals[-1].actions = nn_action
+
     k_actions = []
+
+
     for ka in k_vals:
         k_actions.append(ka.action)
 
@@ -125,6 +142,11 @@ def beam_search(root, k, game_length):  # k is the beam size
     current_q = [root]  # we will iterate through this to create child
     next_q = []  # we will que children nodes here
     df = data.tail(game_length + 1).copy()
+    df_nn = data_nn.tail(game_length + 1).copy()
+    # b, h, s = data_nn['b'], data_nn['h'], data_nn['s']
+    # hot = np.column_stack((b, h, s))
+    # row_nn = hot[-level - 1]
+    # nn_action = ''
     count = 0
     y_targs = []
     for level in range(game_length):
