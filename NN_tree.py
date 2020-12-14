@@ -187,7 +187,8 @@ def nn_take_beams(k, array, level, act):  # for each level in the array, this fu
 
     print("level:", level)
     print("No of nodes Processed: ",len(array))
-    print("Actions AI chose:",k_actions)
+    print("Action NN chose:", nn_action)
+    print("Actions NN + BeamSearch AI chose:",k_actions)
     # for ka in k_vals:
     # print("portfolio:",ka.player.portfolio)
     # print("price:",ka.player.cash)
